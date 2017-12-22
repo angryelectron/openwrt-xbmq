@@ -1,0 +1,58 @@
+#!/bin/sh /etc/rc.common
+# OpenWrt Init Script for XBMQ
+
+XBMQ=/usr/lib/node_modules/xbmq/xbmq.js
+NAME=XBMQ
+START=99
+STOP=99
+FOREVER_ARGS="-a"
+
+# Read settings from uci config                                                          
+. /lib/functions.sh                                                             
+config_load xbmq                                                                
+config_get broker settings broker                                               
+config_get port settings port                                                   
+config_get baud settings baud                                                   
+config_get log settings log                                                     
+config_get loglevel settings loglevel                                           
+config_get apiMode settings apiMode                                             
+config_get rootTopic settings rootTopic   
+config_get username settings username
+config_get password settings password
+
+XBMQ_ARGS="--rootTopic $rootTopic --broker $broker --port $port --baud $baud --log $log --loglevel $loglevel --apiMode $apiMode --username $username --password $password"
+
+# Forever has some issues with the -p flag
+# so use an environment variable instead
+export FOREVER_ROOT=/tmp/forever
+if [ ! -d "$FOREVER_ROOT" ]; then
+	mkdir -p $FOREVER_ROOT 
+fi
+
+start() {
+	echo "Starting $NAME..."	
+	forever start $FOREVER_ARGS -s $XBMQ $XBMQ_ARGS
+	echo 1 > /sys/class/leds/led0/brightness
+}
+
+stop() {
+	echo "Stopping $NAME..." 
+	echo 0 > /sys/class/leds/led0/brightness
+	forever stop $FOREVER_ARGS $XBMQ
+}
+
+restart() {
+	echo "Restarting $NAME..."
+	forever stop $FOREVER_ARGS $XBMQ
+	forever start $FOREVER_ARGS $XBMQ $XBMQ_ARGS
+}
+
+EXTRA_COMMANDS="status"
+EXTRA_HELP=<<EOF
+	status Check if $NAME is running or not
+EOF
+
+status() {
+	echo "Checking status of $NAME..."
+	forever list $FOREVER_ARGS	
+}

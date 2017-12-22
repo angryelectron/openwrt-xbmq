@@ -1,0 +1,62 @@
+<%+header%>
+
+<h2>XBMQ Console</h2>
+
+<pre id="status" style="height: 15em;">
+  <%=version%>
+</pre>
+
+<p>
+  <a id="status-btn" class="cbi-button cbi-button-find" href="#">Check Status</a>
+  <a id="start-btn" class="cbi-button cbi-button-apply" href="#">Start</a>
+  <a id="stop-btn" class="cbi-button cbi-button-reset" href="#">Stop</a>
+  <a id="restart-btn" class="cbi-button cbi-button-reload" href="#">Restart</a>
+  <a id="3g-btn" class="cbi-button cbi-button-download" href="#">3G Info</a>
+</p>
+
+<script>
+  function getStatus() {
+    document.getElementById('status').innerHTML = 'Checking status of XBMQ...';
+    XHR.get('<%=luci.dispatcher.build_url("admin", "xbmq", "status")%>', null,  function (status) {
+      document.getElementById('status').innerHTML = status.response; 
+    }); 
+  }
+
+  function start() {
+    document.getElementById('status').innerHTML = 'Starting XBMQ...';
+    XHR.get('<%=luci.dispatcher.build_url("admin", "xbmq", "start")%>', null,  function (status) {
+      document.getElementById('status').innerHTML = status.response; 
+    }); 
+  }
+
+  function stop() {
+    document.getElementById('status').innerHTML = 'Stopping XBMQ...';
+    XHR.get('<%=luci.dispatcher.build_url("admin", "xbmq", "stop")%>', null,  function (status) {
+      document.getElementById('status').innerHTML = status.response; 
+    }); 
+  }
+
+  function restart() {
+    document.getElementById('status').innerHTML = 'Restarting XBMQ...';
+    XHR.get('<%=luci.dispatcher.build_url("admin", "xbmq", "restart")%>', null,  function (status) {
+      document.getElementById('status').innerHTML = status.response; 
+    }); 
+  }
+
+  function signal() {
+    document.getElementById('status').innerHTML = 'Getting 3G Info...';
+    XHR.get('<%=luci.dispatcher.build_url("admin", "xbmq", "signal")%>', null,  function (status) {
+      document.getElementById('status').innerHTML = status.response; 
+    }); 
+  }
+
+
+  document.getElementById('status-btn').addEventListener('click', getStatus); 
+  document.getElementById('start-btn').addEventListener('click', start); 
+  document.getElementById('stop-btn').addEventListener('click', stop); 
+  document.getElementById('restart-btn').addEventListener('click', restart); 
+  document.getElementById('3g-btn').addEventListener('click', signal); 
+
+</script>
+
+<%+footer%>

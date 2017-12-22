@@ -1,0 +1,17 @@
+<%+header%>
+
+<h2>XBMQ Logfile - <%=logfile%></h2>
+
+<p>
+  <a class="cbi-button cbi-button-reset" href="<%=REQUEST_URI .. "/clear"%>">
+  Clear</a>
+</p>
+
+<pre>
+  <%=luci.sys.exec("cat " .. logfile)%>
+</pre>
+
+<a class="cbi-button cbi-button-reset" href="<%=REQUEST_URI .. "/clear"%>">
+  Clear</a>
+
+<%+footer%>
